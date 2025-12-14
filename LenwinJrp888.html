@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>โปรแกรมวินเลข</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #eef2f7;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+input, button, textarea {
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px;
+    font-size: 16px;
+}
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+.btn-calc { background: #007bff; color: white; }
+.btn-reset { background: #dc3545; color: white; margin-top: 5px; }
+.btn-copy { background: #28a745; color: white; margin-top: 5px; }
+
+textarea {
+    height: 90px;
+}
+.section {
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>โปรแกรมวินเลข (จากหน้าไปหลัง)</h2>
+
+    <label>เลขตั้งต้น</label>
+    <input type="number" id="baseNumber" placeholder="เช่น 123">
+
+    <button class="btn-calc" onclick="calculate()">คำนวณ</button>
+    <button class="btn-reset" onclick="resetAll()">Reset</button>
+
+    <div class="section">
+        <h3>เลข 2 ตัว (ไม่รวมเบิ้ล)</h3>
+        <textarea id="twoNoDouble"></textarea>
+        <button class="btn-copy" onclick="copyText('twoNoDouble')">คัดลอก</button>
+    </div>
+
+    <div class="section">
+        <h3>เลข 2 ตัว (รวมเบิ้ล)</h3>
+        <textarea id="twoWithDouble"></textarea>
+        <button class="btn-copy" onclick="copyText('twoWithDouble')">คัดลอก</button>
+    </div>
+
+    <div class="section">
+        <h3>เลข 3 ตัว (ไม่รวมเบิ้ล)</h3>
+        <textarea id="threeNoDouble"></textarea>
+        <button class="btn-copy" onclick="copyText('threeNoDouble')">คัดลอก</button>
+    </div>
+
+    <div class="section">
+        <h3>เลข 3 ตัว (รวมเบิ้ล)</h3>
+        <textarea id="threeWithDouble"></textarea>
+        <button class="btn-copy" onclick="copyText('threeWithDouble')">คัดลอก</button>
+    </div>
+</div>
+
+<script>
+function permutations(arr, length, allowDouble) {
+    let result = [];
+
+    function permute(current) {
+        if (current.length === length) {
+            result.push(current.join(''));
+            return;
+        }
+        for (let i = 0; i < arr.length; i++) {
+            if (!allowDouble && current.includes(arr[i])) continue;
+            current.push(arr[i]);
+            permute(current);
+            current.pop();
+        }
+    }
+
+    permute([]);
+    return [...new Set(result)];
+}
+
+function calculate() {
+    const base = document.getElementById('baseNumber').value;
+    if (!base) return;
+
+    const digits = base.split('');
+
+    document.getElementById('twoNoDouble').value =
+        permutations(digits, 2, false).join(' ');
+    document.getElementById('twoWithDouble').value =
+        permutations(digits, 2, true).join(' ');
+    document.getElementById('threeNoDouble').value =
+        permutations(digits, 3, false).join(' ');
+    document.getElementById('threeWithDouble').value =
+        permutations(digits, 3, true).join(' ');
+}
+
+function copyText(id) {
+    const textarea = document.getElementById(id);
+    textarea.select();
+    textarea.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    alert("คัดลอกเรียบร้อย");
+}
+
+function resetAll() {
+    document.getElementById('baseNumber').value = '';
+    document.querySelectorAll('textarea').forEach(t => t.value = '');
+}
+</script>
+
+</body>
+</html>
